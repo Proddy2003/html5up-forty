@@ -46,9 +46,9 @@ jobs:
           docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@0.12.0
         with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/ci-html-demo:latest
+          image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           format: table
           severity: CRITICAL,HIGH
           exit-code: 1
@@ -60,13 +60,9 @@ jobs:
   # ===============================
   deploy:
     needs: ci
-    runs-on: aws-runner
+    runs-on: aws-runner   # ⚠️ adapte selon ton runner (ubuntu-latest si tu n’as pas de runner perso)
 
     steps:
-      - name: Pull latest image
-        run: |
-          echo "Hello deploy"
-
       - name: Pull latest image
         run: |
           docker pull $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
