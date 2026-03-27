@@ -7,8 +7,8 @@ on:
 
 env:
   IMAGE_NAME: ci-html
-  IMAGE_TAG: 1.0.1
-  DOCKER_REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
+  IMAGE_TAG: 1.0.2
+  DOCKER_REGISTRY: proddy2004   # ton identifiant Docker Hub
 
 jobs:
 
@@ -46,7 +46,7 @@ jobs:
           docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
 
       - name: Run Trivy vulnerability scanner
-        uses:  aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           format: table
@@ -60,7 +60,7 @@ jobs:
   # ===============================
   deploy:
     needs: ci
-    runs-on: aws-runner   # ⚠️ adapte selon ton runner (ubuntu-latest si tu n’as pas de runner perso)
+    runs-on: ubuntu-latest   # ⚠️ mets "aws-runner" si tu as un runner perso
 
     steps:
       - name: Pull latest image
