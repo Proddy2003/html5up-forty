@@ -1,7 +1,11 @@
-# Use official Nginx image as base (for serving static content)
+# Utiliser l'image officielle Nginx basée sur Alpine
 FROM nginx:alpine
 
-# Copy our app files into the default Nginx document root (/usr/share/nginx/html)
+# Mettre à jour les paquets pour corriger zlib
+# et afficher la version installée pour vérification
+RUN apk update && apk upgrade && apk info zlib
+
+# Copier les fichiers statiques dans le répertoire par défaut de Nginx
 COPY index.html /usr/share/nginx/html/
 COPY elements.html /usr/share/nginx/html/
 COPY generic.html /usr/share/nginx/html/
@@ -11,8 +15,8 @@ COPY images /usr/share/nginx/html/images
 COPY LICENSE.txt /usr/share/nginx/html/
 COPY README.txt /usr/share/nginx/html/
 
-# Expose port 80 for HTTP access (Nginx listens on port 80 by default)
+# Exposer le port 80 (Nginx écoute par défaut sur ce port)
 EXPOSE 80
 
-# Run command when container starts up
+# Commande de démarrage du conteneur
 CMD ["nginx", "-g", "daemon off;"]
